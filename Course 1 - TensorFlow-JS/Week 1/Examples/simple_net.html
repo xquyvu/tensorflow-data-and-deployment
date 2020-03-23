@@ -1,0 +1,45 @@
+<html>
+<head></head>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+    <script lang="js">
+        // Define function to train model
+        // Async functions because we want to perform other tasks in the browser
+
+        // callback function
+        async function onEpochEnd(epoch, log){
+            console.log('Epoch:' + epoch + 'Loss' + log.loss);
+        }
+
+        // training function
+        async function doTraining(model){
+            // Wait for the results from model.fit
+            const history = await model.fit(
+                xs,
+                ys,
+                {
+                    epochs: 500,
+                    callbacks: {onEpochEnd}
+                }
+            );
+        }
+
+        // Define NN
+        const model = tf.sequential();
+        model.add(tf.layers.dense({units: 1, inputShape: [1]}));
+        model.compile({loss:'meanSquaredError', optimizer:'sgd'});
+        model.summary();
+
+        // Create training set
+        const xs = tf.tensor2d([-1.0, 0.0, 1.0, 2.0, 3.0, 4.0], [6, 1]);
+        const ys = tf.tensor2d([-3.0, -1.0, 2.0, 3.0, 5.0, 7.0], [6, 1]);
+
+        // Train then output prediction.
+        // Since this is async, the "then" method is required to make the tasks sequential.
+        doTraining(model).then(() => {
+            alert(model.predict(tf.tensor2d([10], [1,1])));
+        });
+    </script>
+<body>
+    <h1>First HTML Page</h1>
+</body>
+</html>

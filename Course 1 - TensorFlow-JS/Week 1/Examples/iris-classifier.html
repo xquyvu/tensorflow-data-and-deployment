@@ -21,14 +21,16 @@
 
             // One hot encode
             const convertedData =
-                  trainingData.map(({xs, ys}) => {
-                      const labels = [
-                            ys.species == "setosa" ? 1 : 0,
-                            ys.species == "virginica" ? 1 : 0,
-                            ys.species == "versicolor" ? 1 : 0
-                      ]
-                      return {xs: Object.values(xs), ys: Object.values(labels)};
-                  }).batch(10);
+                // we want a set of xs and ys back
+                trainingData.map(({xs, ys}) => {
+                    const labels = [
+                        ys.species == "setosa" ? 1 : 0,
+                        ys.species == "virginica" ? 1 : 0,
+                        ys.species == "versicolor" ? 1 : 0
+                    ]
+                    // return xs next to an array of one hot encoded ys
+                    return {xs: Object.values(xs), ys: Object.values(labels)};
+                }).batch(10);
 
             // Define network
             const numOfFeatures = (await trainingData.columnNames()).length - 1;
